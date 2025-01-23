@@ -28,6 +28,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+      - name: Navigate to the subdirectory
+        run: cd /starter/src/
+
       - name: Install dependencies
         run: npm install
 
