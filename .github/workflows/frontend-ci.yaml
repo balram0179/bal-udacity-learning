@@ -29,7 +29,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Navigate to the subdirectory
-        run: cd /starter/frontend/src/
+        run: cd /workspace/starter/frontend/src
 
       - name: Install dependencies
         run: npm install
