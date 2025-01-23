@@ -4,7 +4,7 @@ module.exports = {
   plugins: ['react', 'prettier'],
   settings: {
     react: {
-      version: 'detect',
+      version: 'detect', // Automatically detect the React version
     },
   },
   parserOptions: {
@@ -21,7 +21,7 @@ module.exports = {
     jest: true,
   },
   rules: {
-      'prettier/prettier': [
+    'prettier/prettier': [
       'error',
       {
         singleQuote: true,
@@ -30,7 +30,7 @@ module.exports = {
         parser: 'babel-ts',
       },
     ],
-    
+
     // Customize your rules here
     'react/prop-types': process.env.FAIL_LINT ? 2 : 0,
     'react/jsx-uses-vars': 'warn',
