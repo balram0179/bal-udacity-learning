@@ -55,18 +55,18 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('workspace/starter/frontend/package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: |
-          cd workspace/starter/frontend
+          cd starter/frontend
           npm ci
 
       - name: Run tests
         run: |
-          cd workspace/starter/frontend
+          cd starter/frontend
           npm run test
 
   build:
@@ -87,16 +87,16 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('/starter/frontend/package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: |
-          cd workspace/starter/frontend
+          cd starter/frontend
           npm ci
 
       - name: Build Docker image
         run: |
-          cd workspace/starter/frontend
+          cd starter/frontend
           docker build -t frontend-application .
