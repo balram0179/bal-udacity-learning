@@ -28,17 +28,20 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Navigate to the subdirectory
+      - name: Navigate to the frontend directory
         run: cd workspace/starter/frontend && pwd
 
       - name: Install dependencies
-        run: cd workspace/starter/frontend 
-        run: npm ci
+        run: |
+          cd workspace/starter/frontend
+          npm ci
 
       - name: Run lint
-        run: npm run lint
+        run: |
+          cd workspace/starter/frontend
+          npm run lint
 
-test:
+  test:
     name: Run Tests
     runs-on: ubuntu-latest
 
@@ -60,10 +63,14 @@ test:
             ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          cd workspace/starter/frontend
+          npm ci
 
       - name: Run tests
-        run: npm run test
+        run: |
+          cd workspace/starter/frontend
+          npm run test
 
   build:
     name: Build Application
@@ -88,8 +95,11 @@ test:
             ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          cd workspace/starter/frontend
+          npm ci
 
       - name: Build Docker image
         run: |
+          cd workspace/starter/frontend
           docker build -t frontend-application .
