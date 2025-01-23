@@ -55,7 +55,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/src/**/__tests__/**/*.*) }}
           restore-keys: |
             ${{ runner.os }}-node-
 
