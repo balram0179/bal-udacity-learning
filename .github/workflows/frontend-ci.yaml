@@ -24,12 +24,12 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('C:\balram0179git\bal-udacity-learning\starter\frontend/package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('C:\balram0179git\bal-udacity-learning\starter\frontend\package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
       - name: Navigate to the frontend directory
-        run: cd /starter/frontend && pwd
+        run: cd C:\balram0179git\bal-udacity-learning\starter\frontend && pwd
 
       - name: Install dependencies
         run: |
