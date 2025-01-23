@@ -55,7 +55,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/src/components/') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/src/components/*.{js,jsx,ts,tsx}') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
