@@ -1,0 +1,102 @@
+# Workflow name
+name: Backend Continuous Deployment
+
+# Triggers for the workflow
+on:
+# Manual trigger using the workflow_dispatch event
+  workflow_dispatch:
+
+  # Automatic trigger on push events to the main branch
+  push:
+    branches:
+      - main
+# Jobs defined in the workflow
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Specify Python version
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pipenv
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/Pipfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pipenv
+      - name: Install dependencies
+        run: |
+          pip install pipenv
+      - name: Run lint
+        run: |
+          pip install flake8
+          cd starter/backend && pipenv run lint
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Specify Python version
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pipenv
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/Pipfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pipenv
+      - name: Install dependencies
+        run: |
+          pip install pipenv
+          pip install flake8
+      - name: Run lint
+        run: |          
+          cd starter/backend && pipenv install pytest && pipenv run test
+  build:
+    needs: [lint,test]
+    runs-on: ubuntu-latest
+    defaults:
+        run:
+          working-directory: backend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Specify Python version
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+        # add the secret variabls with the keys of the IAM role
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{secrets.AWS_SESSION_TOKEN}}
+          aws-region: us-east-1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Build the docker image
+        working-directory: starter/backend
+        #add the AWS_ACCOUNT_ID variable
+        run: |
+          docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 --tag ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/backend:${GITHUB_SHA::7} .
+      - name: Publish the docker image to ECR
+        working-directory: starter/backend
+        run: |
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/backend:${GITHUB_SHA::7}
+      - name: Kubeconfig configuration
+        working-directory: starter/backend
+        run: |
+          aws eks update-kubeconfig --name cluster --region us-east-1
+      - name: Deploy Docker Image to Amazon EKS
+        working-directory: starter/backend/k8s
+        run: |
+          kustomize edit set image backend=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/backend:${GITHUB_SHA::7}
+          kustomize build | kubectl apply -f -
