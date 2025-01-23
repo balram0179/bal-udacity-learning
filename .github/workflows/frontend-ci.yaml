@@ -36,6 +36,7 @@ jobs:
       - name: Run lint
         run: |
           cd starter/frontend
+          npm init @eslint/config@latest
           npm run lint
 
   test:
