@@ -24,21 +24,21 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('workspace/starter/frontend/package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('/starter/frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
       - name: Navigate to the frontend directory
-        run: cd workspace/starter/frontend && pwd
+        run: cd /starter/frontend && pwd
 
       - name: Install dependencies
         run: |
-          cd workspace/starter/frontend
+          cd /starter/frontend
           npm ci
 
       - name: Run lint
         run: |
-          cd workspace/starter/frontend
+          cd /starter/frontend
           npm run lint
 
   test:
