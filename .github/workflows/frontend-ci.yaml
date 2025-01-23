@@ -32,8 +32,8 @@ jobs:
         run: cd workspace/starter/frontend && pwd
 
       - name: Install dependencies
-        run: cd workspace/starter/frontend # Change to the correct directory
-        npm ci  #Run npm ci using the package-lock.json from that directory
+        run: cd workspace/starter/frontend 
+        run: npm ci
 
       - name: Run lint
         run: npm run lint
