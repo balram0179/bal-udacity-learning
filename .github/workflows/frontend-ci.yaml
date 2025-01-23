@@ -55,18 +55,18 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/src/components/__tests__/**/*.*') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('starter/frontend/src/components/') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
       - name: Install dependencies
         run: |
-          cd starter/frontend
+          cd starter/frontend/src/components
           npm ci
 
       - name: Run tests
         run: |
-          cd starter/frontend
+          cd starter/frontend/src/components
           npm run test
 
   build:
