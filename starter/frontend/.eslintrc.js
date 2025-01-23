@@ -29,9 +29,8 @@ module.exports = {
         printWidth: 120,
         parser: 'babel-ts',
       },
-    ],
+    ], // <-- Ensure this line has a newline below it
 
-    // Customize your rules here
     'react/prop-types': process.env.FAIL_LINT ? 2 : 0,
     'react/jsx-uses-vars': 'warn',
   },
