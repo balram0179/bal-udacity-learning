@@ -73,19 +73,20 @@ jobs:
         working-directory: starter/frontend
         #add the AWS_ACCOUNT_ID variable
         run: |
-          docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 --tag ${{ secrets.AWS_ACCOUNT_ID }} dkr.ecr.us-east-1.amazonaws.com/frontend:${GITHUB_SHA::7} .
+          docker build --build-arg=REACT_APP_MOVIE_API_URL=http://localhost:5000 --tag ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/frontend:${GITHUB_SHA::7} .
 
       - name: Publish the docker image to ECR
         working-directory: starter/frontend
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker push ${{ secrets.AWS_ACCOUNT_ID }} dkr.ecr.us-east-1.amazonaws.com/frontend:${GITHUB_SHA::7}
+          docker push ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/frontend:${GITHUB_SHA::7}
+          
       - name: Kubeconfig configuration
         run: |
           aws eks update-kubeconfig --name cluster --region us-east-1
       - name: Deploy Docker Image to Amazon EKS
         working-directory: starter/frontend/k8s
         run: |
-          kustomize edit set image frontend=${{ secrets.AWS_ACCOUNT_ID }} dkr.ecr.us-east-1.amazonaws.com/frontend:${GITHUB_SHA::7}
+          kustomize edit set image frontend=${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/frontend:${GITHUB_SHA::7}
           kustomize build | kubectl apply -f -
