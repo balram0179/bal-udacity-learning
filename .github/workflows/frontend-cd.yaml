@@ -69,11 +69,25 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
+      
+      - name: Display application URLs
+        id: get_be_service_url
+        run: |
+          cd starter/frontend/k8s
+          kubectl get svc -A
+          BE_SERVICE_URL=$(kubectl get svc backend -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+          echo "BE_SERVICE_URL=${BE_SERVICE_URL}"
+          echo "::set-output name=be_service_url::${BE_SERVICE_URL}"
+
       - name: Build the docker image
         working-directory: starter/frontend
         #add the AWS_ACCOUNT_ID variable
-        run: |          
-          docker build --build-arg=REACT_APP_MOVIE_API_URL=https://kubernetes.default.svc.cluster.local:443 --tag ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/frontend:${GITHUB_SHA::7} .
+        run: |
+          echo "Using BE_SERVICE_URL=${{ steps.get_be_service_url.outputs.be_service_url }}"
+          docker build --build-arg=REACT_APP_MOVIE_API_URL=http://${{ steps.get_be_service_url.outputs.be_service_url }} --tag=${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/frontend:${GITHUB_SHA::7} .
+          docker tag frontend:${GITHUB_SHA} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/frontend:${GITHUB_SHA}          
+          
+        #docker build --build-arg=REACT_APP_MOVIE_API_URL=https://kubernetes.default.svc.cluster.local:443 --tag ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/frontend:${GITHUB_SHA::7} .
 
       - name: Publish the docker image to ECR
         working-directory: starter/frontend
