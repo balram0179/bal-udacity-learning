@@ -74,7 +74,7 @@ jobs:
         working-directory: starter/frontend
         #add the AWS_ACCOUNT_ID variable
         run: |
-            docker build --build-arg=REACT_APP_MOVIE_API_URL=a418a03f148d04cb6aa1ba45debe777b-147640801.us-east-1.elb.amazonaws.com --tag ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/frontend:${GITHUB_SHA::7} .
+            docker build --build-arg=REACT_APP_MOVIE_API_URL=http://a418a03f148d04cb6aa1ba45debe777b-147640801.us-east-1.elb.amazonaws.com --tag ${{secrets.AWS_ACCOUNT_ID}}.dkr.ecr.us-east-1.amazonaws.com/frontend:${GITHUB_SHA::7} .
 
       - name: Publish the docker image to ECR
         working-directory: starter/frontend
